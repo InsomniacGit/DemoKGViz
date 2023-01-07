@@ -196,27 +196,25 @@ select#select-station {
 }
 
 div#column1 {
-  float: left;
-  width: 25%;
-  height: 300px;
+  width: 33%;
+  display: inline-block;
+  height: auto;
+  vertical-align: top;
 }
 
 div#column2 {
-  width: 25%;
-  float: left;
-  height: 300px;
+  width: 33%;
+  display: inline-block;
+  height: auto;
+  vertical-align: top;
+
 }
 
 div#column3 {
-  width: 25%;
-  float: left;
-  height: 300px;
-}
-
-div#column4 {
-  float: left;
-  width: 25%;
-  height: 300px;
+  width: 33%;
+  display: inline-block;
+  height: auto;
+  vertical-align: top;
 }
 
 div#dateStart {

@@ -741,7 +741,7 @@ function buildQuery_cumulativeDegreeDaysStation(stationName, startDate, endDate)
 
 
 
-function buildQuery_extractData(stationName, startDate, endDate) {
+function buildQuery_extractRDF(stationName, startDate, endDate) {
     let query = `
     PREFIX wes: <http://ns.inria.fr/meteo/observationslice/>
     PREFIX weo: <http://ns.inria.fr/meteo/ontology/>
@@ -809,7 +809,44 @@ function buildQuery_extractData(stationName, startDate, endDate) {
 
 
 
+function buildQuery_extractData(stationName, startDate, endDate) {
+    let query = `
+    PREFIX wes: <http://ns.inria.fr/meteo/observationslice/>
+    PREFIX weo: <http://ns.inria.fr/meteo/ontology/>
+    PREFIX qb:  <http://purl.org/linked-data/cube#>
+    PREFIX wes-dimension: <http://ns.inria.fr/meteo/observationslice/dimension#>
+    PREFIX wes-measure: <http://ns.inria.fr/meteo/observationslice/measure#>
+    PREFIX wes-attribute: <http://ns.inria.fr/meteo/observationslice/attribute#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX dct:   <http://purl.org/dc/terms/> 
 
+    SELECT distinct ?stationName ?date  ?temp_avg ?temp_min  ?temp_max (?temp_max -  ?temp_min) as ?tdiff  ?rainfall ?gdd
+    WHERE
+    {
+        VALUES ?stationName {"`+ stationName +`"}
+        VALUES ?periodStartDate {"`+ startDate +`"}
+        VALUES ?periodEndDate {"`+ endDate +`"}
+        ?s  a qb:Slice ;
+        wes-dimension:station ?station  ;
+    
+        wes-dimension:year ?year;
+        qb:observation [
+        a qb:Observation ;
+        wes-attribute:observationDate ?date ;
+        wes-measure:minDailyTemperature ?temp_min; 
+        wes-measure:maxDailyTemperature ?temp_max; 
+        wes-measure:avgDailyTemperature ?temp_avg; 
+        wes-measure:rainfall24h ?rainfall]  .
+
+        ?station a weo:WeatherStation ; rdfs:label ?stationName; weo:stationID ?stationID .
+        BIND( IF( xsd:float(?temp_avg) > 10.0 , xsd:float(?temp_avg) - 10.0, xsd:float(1))  as ?gdd)
+        FILTER (?date >=xsd:date(?periodStartDate))
+        FILTER (?date <=xsd:date(?periodEndDate))
+    }
+    ORDER BY ?date
+    `
+    return query;
+}
 
 
 

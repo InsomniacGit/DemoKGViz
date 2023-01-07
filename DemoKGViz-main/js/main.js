@@ -4,7 +4,7 @@ SPARQL =  function(o) {
             url: o.endpoint,
             accepts: {json: "application/sparql-results+json"},
             data: {query: q, apikey: o.apikey},
-            dataType: "json", 
+            dataType: "json",
             method: "POST",
         });
     };
@@ -131,10 +131,9 @@ function dateChanged() {
 
 
 
-
 function createFileRDF(stationName, startDate, endDate) {
     console.log("stationName: " + stationName + " startDate: " + startDate + " endDate: " + endDate) 
-    endpoint.queryTurtle(buildQuery_extractData(stationName, startDate, endDate)).done((turtle) => {
+    endpoint.queryTurtle(buildQuery_extractRDF(stationName, startDate, endDate)).done((turtle) => {
         // console.log(turtle);
         downloadFileRDF(turtle);
     });
@@ -180,10 +179,12 @@ function downloadFileJSON(text) {
 
 
 
+
+
+
 function createFileCSV(stationName, startDate, endDate) {
     console.log("stationName: " + stationName + " startDate: " + startDate + " endDate: " + endDate) 
     endpoint.queryCSV(buildQuery_extractData(stationName, startDate, endDate)).done((csv) => {
-        csv = csv.replace(/;/g, ',');
         console.log(csv);
         downloadFileCSV(csv);
     });
